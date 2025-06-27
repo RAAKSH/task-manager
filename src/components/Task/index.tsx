@@ -154,7 +154,7 @@ function Tasks() {
       {mode === "list" ? (
         <Header />
       ) : (
-        <div className="bg-[#034EA2] text-white text-lg font-bold px-6 py-4 flex items-center gap-2 px-4 py-3">
+        <div className="bg-[#034EA2] text-white text-lg font-bold flex items-center gap-2 px-4 py-3">
           <button onClick={() => setMode("list")} className="text-xl">
             ←
           </button>
@@ -165,44 +165,43 @@ function Tasks() {
         </div>
       )}
 
-<AnimatePresence mode="wait">
-      {mode === "list" && (
-        <>
-          <div className="flex gap-2 my-4">
-            <div className="flex-1">
-              <SearchBar value={searchTerm} onChange={setSearchTerm} />
+      <AnimatePresence mode="wait">
+        {mode === "list" && (
+          <>
+            <div className="flex gap-2 my-4">
+              <div className="flex-1">
+                <SearchBar value={searchTerm} onChange={setSearchTerm} />
+              </div>
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="w-32 h-10 p-2 border rounded-md text-sm"
+              >
+                <option value="all">All</option>
+                {MAP_STATUS.map((status) => (
+                  <option key={status} value={status.toLowerCase()}>
+                    {status.charAt(0).toUpperCase() + status.slice(1)}
+                  </option>
+                ))}
+              </select>
             </div>
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-32 h-10 p-2 border rounded-md text-sm"
+
+            {loading ? (
+              <div className="text-center py-10 text-gray-500">
+                Loading tasks...
+              </div>
+            ) : (
+              showTasks()
+            )}
+            <button
+              className="absolute bottom-6 right-6 bg-[#034EA2] text-white w-14 h-14 rounded-full text-2xl flex items-center justify-center shadow-lg"
+              onClick={handleShowAddTask}
             >
-              <option value="all">All</option>
-              {MAP_STATUS.map((status) => (
-                <option key={status} value={status.toLowerCase()}>
-                  {status.charAt(0).toUpperCase() + status.slice(1)}
-                </option>
-              ))}
-            </select>
-          </div>
+              +
+            </button>
+          </>
+        )}
 
-          {loading ? (
-            <div className="text-center py-10 text-gray-500">
-              Loading tasks...
-            </div>
-          ) : (
-            showTasks()
-          )}
-          <button
-            className="absolute bottom-6 right-6 bg-[#034EA2] text-white w-14 h-14 rounded-full text-2xl flex items-center justify-center shadow-lg"
-            onClick={handleShowAddTask}
-          >
-            +
-          </button>
-        </>
-      )}
-
-     
         {mode === "add" && (
           <motion.div
             initial={{ opacity: 0, y: 30 }}
