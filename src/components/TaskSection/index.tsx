@@ -16,6 +16,7 @@ interface TaskSectionProps {
   handleDelete:(id:number)=>void;
   handleEdit:(item:Task)=>void;
   activeSection: string;
+  setActiveSection:(section: string)=>void
 }
 
 export default function TaskSection({ title, count, item,handleDelete,handleEdit,activeSection, setActiveSection, }: TaskSectionProps) {
@@ -44,7 +45,7 @@ export default function TaskSection({ title, count, item,handleDelete,handleEdit
           {item?.map((item) => (
             <TaskItem
               key={item.id}
-              item={item}
+              item={item as unknown as  Task}
               handlDelete={handleDelete}
               handleEdit={handleEdit}
             />

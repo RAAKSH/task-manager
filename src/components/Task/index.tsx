@@ -57,7 +57,7 @@ function Tasks() {
       id: Date.now(),
       title: addTask.title,
       desc: addTask.desc,
-      status: addTask?.status,
+      status: addTask?.status as string,
     };
     console.log("=====", addTask);
 
@@ -107,7 +107,7 @@ function Tasks() {
     setTaskList((prev) =>
       prev.map((task) => (task.id === editingTask.id ? editingTask : task))
     );
-    setEditingTask({});
+    setEditingTask(null);
     setMode("list");
   };
 
@@ -137,7 +137,7 @@ function Tasks() {
               key={status}
               title={status.charAt(0).toUpperCase() + status.slice(1)}
               count={filteredTasks.length}
-              item={filteredTasks}
+              item={filteredTasks as  unknown as Task[]}
               handleDelete={handleDelete}
               handleEdit={handleEdit}
               activeSection={activeSection}
