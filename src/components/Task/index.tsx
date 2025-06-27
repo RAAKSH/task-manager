@@ -1,32 +1,44 @@
-import { useState, type ChangeEvent } from "react";
+import { useEffect, useState, type ChangeEvent } from "react";
 import Header from "../Header/index";
 import SearchBar from "../SearchBar/index";
 import TaskSection from "../TaskSection/index";
 import TaskForm from "../TaskForm";
 import type { Task } from "../../types/task";
+import EditTask from "../EditTask";
+import { getTasks, saveTasks } from "../../utils/TaskStore";
 
 type ActionMode = "list" | "add" | "edit" | "delete";
 
-
 function Tasks() {
   const [mode, setMode] = useState<ActionMode>("list");
+  const [editingTask, setEditingTask] = useState<Task>();
   const [activeSection, setActiveSection] = useState<string | null>(
     "In Progress"
   );
   const [taskList, setTaskList] = useState<Task[]>([]);
   const [addTask, setAddTask] = useState({
     id: 0,
-    status: "Pending",
+    status: "pending",
     title: "",
     desc: "",
   });
+
+  useEffect(() => {
+    const getAllTasks = getTasks();
+    if (getAllTasks.length > 1) {
+      setTaskList(getAllTasks);
+    }
+  }, []);
+
+  useEffect(() => {
+    saveTasks(addTask);
+  }, [addTask]);
 
   const handleShowAddTask = () => {
     setMode("add");
   };
 
   const addTaskHandler = () => {
-    console.log("=====", addTask);
     if (!addTask.title.trim()) return;
     const newTask: Task = {
       id: Date.now(),
@@ -34,16 +46,18 @@ function Tasks() {
       desc: addTask.desc,
       status: addTask?.status,
     };
+    console.log("=====", addTask);
+
     setTaskList((prev) => [newTask, ...prev]);
+
     setAddTask({
       id: 0,
       title: "",
       desc: "",
-      status: "",
+      status: "pending",
     });
+    setMode("list");
   };
-
-  console.log("=====", taskList);
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -54,6 +68,40 @@ function Tasks() {
       setAddTask((prevState) => ({ ...prevState, [name]: value }));
     }
   };
+
+  const handleDelete = (id: number) => {
+    setTaskList((prev) => prev.filter((task) => task.id !== id));
+  };
+
+  const handleEditChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+
+    if (name && value) {
+      setEditingTask((prevState) => ({ ...prevState, [name]: value }));
+    }
+  };
+
+  const handleEdit = (item: Task) => {
+    setMode("edit");
+    setEditingTask(item);
+  };
+
+  const editTaskHandler = () => {
+    if (!editingTask) return;
+
+    setTaskList((prev) =>
+      prev.map((task) => (task.id === editingTask.id ? editingTask : task))
+    );
+    setEditingTask({});
+    setMode("list");
+  };
+
+  const onCancel = () => {
+    setMode("list");
+  };
+
   return (
     <div className="relative min-h-screen bg-white p-4 max-w-md mx-auto border-1 border-b-gray-300">
       {mode === "list" ? (
@@ -66,7 +114,6 @@ function Tasks() {
           <h2 className="text-lg font-semibold">
             {mode === "add" && "Add Task"}
             {mode === "edit" && "Edit Task"}
-            {mode === "delete" && "Delete Task"}
           </h2>
         </div>
       )}
@@ -74,7 +121,6 @@ function Tasks() {
       {mode === "list" && (
         <>
           <SearchBar />
-         
 
           {taskList?.map((item) => (
             <TaskSection
@@ -82,12 +128,14 @@ function Tasks() {
               title={item?.title}
               count={item?.id}
               item={item}
+              handleDelete={handleDelete}
+              handleEdit={handleEdit}
               //isOpen={activeSection === "In Progress"}
-            //   onToggle={() =>
-            //     setActiveSection(
-            //       activeSection === "In Progress" ? null : "In Progress"
-            //     )
-            //   }
+              //   onToggle={() =>
+              //     setActiveSection(
+              //       activeSection === "In Progress" ? null : "In Progress"
+              //     )
+              //   }
             />
           ))}
 
@@ -105,6 +153,16 @@ function Tasks() {
           onChangehandler={(e) => handleChange(e)}
           addTask={addTask}
           onAdd={addTaskHandler}
+          onCancel={onCancel}
+        />
+      )}
+
+      {mode === "edit" && (
+        <EditTask
+          onChangehandler={(e) => handleEditChange(e)}
+          editingTask={editingTask}
+          onEdit={editTaskHandler}
+          onCancel={onCancel}
         />
       )}
     </div>

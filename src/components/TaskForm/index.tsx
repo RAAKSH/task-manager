@@ -11,9 +11,10 @@ interface TaskFormProps {
   onAdd: () => void;
   addTask: Task;
   onChangehandler: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  onCancel:()=>void;
 }
 
-const TaskForm: FC<TaskFormProps> = ({ onChangehandler, addTask, onAdd }) => (
+const TaskForm: FC<TaskFormProps> = ({ onChangehandler, addTask, onAdd,onCancel }) => (
   <div className="mb-4 mt-4">
     <input
       value={addTask?.title}
@@ -32,17 +33,17 @@ const TaskForm: FC<TaskFormProps> = ({ onChangehandler, addTask, onAdd }) => (
 
     <div className="flex justify-between w-full mt-4">
       <button
-        onClick={onAdd}
-        className="bg-[#034EA2] text-white px-4 py-2 rounded"
+        onClick={onCancel}
+        className="bg-gray-300 text-black rounded hover:bg-gray-400 w-[110px] h-[40px]"
       >
-        Add
+        Cancel
       </button>
 
       <button
-        //onClick={onCancel}
-        className="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400"
+        onClick={onAdd}
+        className="bg-[#034EA2] text-white rounded w-[110px] h-[40px]"
       >
-        Cancel
+        Add
       </button>
     </div>
   </div>

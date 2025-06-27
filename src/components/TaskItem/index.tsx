@@ -1,11 +1,16 @@
 import type { Task } from "../../types/task";
-import { Pencil, Trash } from 'lucide-react';
-
+import { Pencil, Trash } from "lucide-react";
 
 interface TaskItemProps {
-    item: Task;
-  }
-export default function TaskItem({ item }: TaskItemProps) {
+  item: Task;
+  handlDelete: (id: number) => void;
+  handleEdit: (task: Task) => void;
+}
+export default function TaskItem({
+  item,
+  handlDelete,
+  handleEdit,
+}: TaskItemProps) {
   const date = new Date(item?.id);
   const day = date.getDate();
   const month = date.toLocaleString("default", { month: "short" });
@@ -16,7 +21,7 @@ export default function TaskItem({ item }: TaskItemProps) {
     <div className="flex justify-between items-start">
       <div className="flex gap-3 w-full">
         <div className="w-10 h-10 rounded-full border-2 border-[#0052CC] text-[#0052CC] font-medium text-sm flex items-center justify-center">
-          L
+          {item?.title?.charAt(0) || "?"}
         </div>
 
         <div className="flex-1">
@@ -29,9 +34,26 @@ export default function TaskItem({ item }: TaskItemProps) {
               {item?.status}
             </div>
           </div>
-
-          <p className="text-sm text-[#111827] mt-1">{item?.desc}</p>
-          <p className="text-sm text-[#9CA3AF] mt-2">{formattedDate}</p>
+          <div className="flex justify-between items-center mt-2">
+            <p className="text-sm text-[#111827] mt-1">{item?.desc}</p>
+          </div>
+          <div className="flex justify-between items-center mt-2">
+            <p className="text-sm text-[#9CA3AF]">{formattedDate}</p>
+            <div className="flex gap-2">
+              <button
+                className="text-red-600 hover:text-red-800"
+                onClick={() => handlDelete(item?.id as unknown as number)}
+              >
+                <Trash size={16} />
+              </button>
+              <button
+                className="text-blue-600 hover:text-blue-800"
+                onClick={() => handleEdit(item)}
+              >
+                <Pencil size={16} />
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
