@@ -9,20 +9,21 @@ import { getTasks, saveTasks } from "../../utils/TaskStore";
 import { MAP_STATUS } from "../../constants";
 import { motion, AnimatePresence } from "framer-motion";
 
-type ActionMode = "list" | "add" | "edit" | "delete";
+type ActionMode = "list" | "add" | "edit";
 
 function Tasks() {
   const [mode, setMode] = useState<ActionMode>("list");
   const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [editingTask, setEditingTask] = useState<Task>();
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [activeSection, setActiveSection] = useState<string>("In Progress");
   const [taskList, setTaskList] = useState<Task[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const initialRender = useRef(true);
-  const [addTask, setAddTask] = useState({
+
+  const [addTask, setAddTask] = useState<Task>({
     id: 0,
-    status: "pending",
+    status: "Pending",
     title: "",
     desc: "",
   });
@@ -40,11 +41,9 @@ function Tasks() {
   }, []);
 
   useEffect(() => {
-    if (initialRender.current) {
-      return;
+    if (!initialRender.current) {
+      saveTasks(taskList);
     }
-
-    saveTasks(taskList);
   }, [taskList]);
 
   const handleShowAddTask = () => {
@@ -57,9 +56,8 @@ function Tasks() {
       id: Date.now(),
       title: addTask.title,
       desc: addTask.desc,
-      status: addTask?.status as string,
+      status: addTask.status,
     };
-    console.log("=====", addTask);
 
     setTaskList((prev) => [newTask, ...prev]);
 
@@ -67,7 +65,7 @@ function Tasks() {
       id: 0,
       title: "",
       desc: "",
-      status: "pending",
+      status: "Pending",
     });
     setMode("list");
   };
@@ -91,8 +89,10 @@ function Tasks() {
   ) => {
     const { name, value } = e.target;
 
-    if (name && value) {
-      setEditingTask((prevState) => ({ ...prevState, [name]: value }));
+    if (name && value && editingTask) {
+      setEditingTask((prevState) =>
+        prevState ? { ...prevState, [name]: value } : null
+      );
     }
   };
 
@@ -116,15 +116,16 @@ function Tasks() {
   };
 
   const showTasks = () => {
-    const statusesToShow = statusFilter === "all" ? MAP_STATUS : [statusFilter];
+    const statusesToShow =
+      statusFilter === "all" ? MAP_STATUS : [statusFilter];
 
     return (
       <>
         {statusesToShow.map((status) => {
-          const filteredTasks = taskList?.filter((task) => {
+          const filteredTasks = taskList.filter((task) => {
             const matchedStatus =
-              task?.status.toLowerCase() === status.toLowerCase();
-            const matchedSearch = task?.title
+              task.status.toLowerCase() === status.toLowerCase();
+            const matchedSearch = task.title
               .toLowerCase()
               .includes(searchTerm.toLowerCase());
             return matchedStatus && matchedSearch;
@@ -137,7 +138,7 @@ function Tasks() {
               key={status}
               title={status.charAt(0).toUpperCase() + status.slice(1)}
               count={filteredTasks.length}
-              item={filteredTasks as  unknown as Task[]}
+              item={filteredTasks}
               handleDelete={handleDelete}
               handleEdit={handleEdit}
               activeSection={activeSection}
@@ -210,7 +211,7 @@ function Tasks() {
             transition={{ duration: 0.3 }}
           >
             <TaskForm
-              onChangehandler={(e) => handleChange(e)}
+              onChangehandler={handleChange}
               addTask={addTask}
               onAdd={addTaskHandler}
               onCancel={onCancel}
@@ -218,9 +219,9 @@ function Tasks() {
           </motion.div>
         )}
 
-        {mode === "edit" && (
+        {mode === "edit" && editingTask && (
           <EditTask
-            onChangehandler={(e) => handleEditChange(e)}
+            onChangehandler={handleEditChange}
             editingTask={editingTask}
             onEdit={editTaskHandler}
             onCancel={onCancel}
