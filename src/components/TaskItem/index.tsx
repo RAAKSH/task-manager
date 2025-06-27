@@ -31,7 +31,8 @@ export default function TaskItem({
             </h3>
             <div className="flex gap-1 text-sm text-[#111827] whitespace-nowrap">
               <span className="w-2 h-2 rounded-full bg-[#F59E0B] mt-1"></span>
-              {item?.status}
+             
+              {item?.status.charAt(0).toUpperCase() + item?.status.slice(1)}
             </div>
           </div>
           <div className="flex justify-between items-center mt-2">

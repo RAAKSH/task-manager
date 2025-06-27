@@ -1,10 +1,15 @@
+
+
 import type { Task } from "../types/task";
 
-export const getTasks = (): Task[] => {
-  const stored = localStorage.getItem('tasks');
-  return stored ? JSON.parse(stored) : [];
-};
 
-export const saveTasks = (tasks: Task[]) => {
-  localStorage.setItem('tasks', JSON.stringify(tasks));
-};
+const TASKS_KEY = "taskList";
+
+export function saveTasks(tasks: Task[]) {
+  localStorage.setItem(TASKS_KEY, JSON?.stringify(tasks));
+}
+
+export function getTasks() {
+  const data = localStorage?.getItem(TASKS_KEY);
+  return data ? JSON.parse(data) : [];
+}

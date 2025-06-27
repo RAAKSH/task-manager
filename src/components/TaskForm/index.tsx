@@ -1,20 +1,28 @@
 import type { FC } from "react";
 
+
 interface Task {
   title: string;
   desc: string;
-  id: number ;
+  id: number;
   status: string;
 }
 
 interface TaskFormProps {
   onAdd: () => void;
   addTask: Task;
-  onChangehandler: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
-  onCancel:()=>void;
+  onChangehandler: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
+  onCancel: () => void;
 }
 
-const TaskForm: FC<TaskFormProps> = ({ onChangehandler, addTask, onAdd,onCancel }) => (
+const TaskForm: FC<TaskFormProps> = ({
+  onChangehandler,
+  addTask,
+  onAdd,
+  onCancel,
+}) => (
   <div className="mb-4 mt-4">
     <input
       value={addTask?.title}
