@@ -13,19 +13,22 @@ interface Item {
 interface TaskSectionProps {
   title: string;
   count: number;
-  item: Item;
+  item: Item[];
   handleDelete:(id:number)=>void;
   handleEdit:(item:Task)=>void;
+  activeSection: string;
 }
 
-export default function TaskSection({ title, count, item,handleDelete,handleEdit }: TaskSectionProps) {
-  const [isOpen, setIsOpen] = useState(true);
+export default function TaskSection({ title, count, item,handleDelete,handleEdit,activeSection, setActiveSection, }: TaskSectionProps) {
+  const isOpen = activeSection === title;
+
+  console.log("======",item)
 
   return (
     <div className="mb-4">
       <div
         className="flex justify-between items-center bg-[#F5F7FA] px-4 py-3 rounded-md cursor-pointer"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => setActiveSection(isOpen ? "" : title)}
       >
         <span className="text-base text-[#111827]">
           {title} <span className="font-bold">({count})</span>
@@ -39,7 +42,14 @@ export default function TaskSection({ title, count, item,handleDelete,handleEdit
 
       {isOpen && (
         <div className="mt-4 space-y-4">
-          <TaskItem  item={item} handlDelete={handleDelete} handleEdit={handleEdit}/>
+          {item?.map((item) => (
+            <TaskItem
+              key={item.id}
+              item={item}
+              handlDelete={handleDelete}
+              handleEdit={handleEdit}
+            />
+          ))}
         </div>
       )}
     </div>

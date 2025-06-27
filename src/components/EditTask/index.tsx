@@ -1,5 +1,5 @@
 import { useState, type FC } from "react";
-import { statuses } from "../../constants";
+import { STATUS } from "../../constants";
 
 interface Task {
   title: string;
@@ -25,7 +25,7 @@ const EditTask: FC<EditTaskFormProps> = ({
 }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const currentStatus = statuses.find(s => s.value === editingTask.status) || statuses[0];
+  const currentStatus = STATUS?.find(s => s.value === editingTask.status) || STATUS[0];
 
 return (
   <div className="mb-4 mt-4">
@@ -43,7 +43,7 @@ return (
       className="w-full p-2 border rounded mb-4"
       name={"desc"}
     />
-    {/* Status Dropdown */}
+
     <div className="relative mb-4">
         <button
           type="button"
@@ -66,13 +66,13 @@ return (
 
         {dropdownOpen && (
           <div className="absolute z-10 mt-1 w-full bg-white border rounded shadow">
-            {statuses.map((status) => (
+            {STATUS?.map((status) => (
               <div
                 key={status.value}
                 onClick={() => {
                   onChangehandler({
                     target: { name: "status", value: status.value },
-                  } as any);
+                  } as never);
                   setDropdownOpen(false);
                 }}
                 className="flex items-center gap-2 px-4 py-2 cursor-pointer hover:bg-gray-100"
