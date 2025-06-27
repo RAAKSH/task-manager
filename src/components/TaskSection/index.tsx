@@ -2,17 +2,17 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 import TaskItem from "../TaskItem";
 import type { Task } from "../../types/task";
 
-interface Item {
-  id: string;
-  status: string;
-  title: string;
-  desc: string;
-}
+// interface tas] {
+//   id: string;
+//   status: string;
+//   title: string;
+//   desc: string;
+// }
 
 interface TaskSectionProps {
   title: string;
   count: number;
-  item: Item[];
+  item: Task[];
   handleDelete:(id:number)=>void;
   handleEdit:(item:Task)=>void;
   activeSection: string;
