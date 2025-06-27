@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import TaskItem from "../TaskItem";
 import type { Task } from "../../types/task";
