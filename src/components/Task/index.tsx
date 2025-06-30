@@ -151,7 +151,8 @@ function Tasks() {
   };
 
   return (
-    <div className="relative min-h-screen bg-white p-4 max-w-md mx-auto border-1 border-b-gray-300">
+    <div className="relative w-[400px] h-[700px] bg-white p-4 mx-auto border border-b-gray-300 overflow-hidden">
+      <div className="h-full overflow-y-auto">
       {mode === "list" ? (
         <Header />
       ) : (
@@ -228,6 +229,7 @@ function Tasks() {
           />
         )}
       </AnimatePresence>
+      </div>
     </div>
   );
 }
